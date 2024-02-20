@@ -1,0 +1,52 @@
+{
+  "name": "@cielsachen/tenor-v2-wrapper",
+  "version": "1.0.0",
+  "description": "An easy way to use Tenor's v2 API in a Node.js project.",
+  "keywords": [
+    "nodejs",
+    "wrapper",
+    "typescript",
+    "api-wrapper",
+    "tenor-api",
+    "tenor"
+  ],
+  "homepage": "https://github.com/CielSachen/tenor-v2-wrapper#readme",
+  "bugs": {
+    "url": "https://github.com/CielSachen/tenor-v2-wrapper/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CielSachen/tenor-v2-wrapper.git"
+  },
+  "license": "ISC",
+  "author": "CielSachen",
+  "type": "module",
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "tsc && tsc-alias",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@stylistic/eslint-plugin": "^1.6.2",
+    "@types/eslint": "^8.56.2",
+    "@types/node": "^20.11.19",
+    "@typescript-eslint/eslint-plugin": "^7.0.1",
+    "@typescript-eslint/parser": "^7.0.1",
+    "eslint": "^8.56.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsdoc": "^48.1.0",
+    "eslint-plugin-simple-import-sort": "^12.0.0",
+    "tsc-alias": "^1.8.8",
+    "tslib": "^2.6.2",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=20.11",
+    "pnpm": ">=8"
+  }
+}
