@@ -1,5 +1,5 @@
+import { endpoints } from '@constants';
 import { type ErrorStatus, fetchJSON } from '@libraries/fetch.js';
-import { endpoints } from '@utilities/endpoints.js';
 
 export type { ErrorStatus };
 export { endpoints };

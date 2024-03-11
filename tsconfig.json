@@ -11,11 +11,11 @@
     "moduleResolution": "NodeNext",
     "baseUrl": "src/",
     "paths": {
+      "@constants": [
+        "constants/index.ts"
+      ],
       "@libraries/*": [
         "libraries/*"
-      ],
-      "@utilities/*": [
-        "utilities/*"
       ]
     },
     "resolveJsonModule": true,
