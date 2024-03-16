@@ -2,6 +2,7 @@
 	"recommendations": [
 		"aaron-bond.better-comments",
 		"dbaeumer.vscode-eslint",
-		"pmneo.tsimporter"
+		"pmneo.tsimporter",
+		"redhat.vscode-yaml"
 	]
 }
