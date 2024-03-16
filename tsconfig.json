@@ -14,8 +14,8 @@
       "@constants": [
         "constants/index.ts"
       ],
-      "@libraries/*": [
-        "libraries/*"
+      "@lib/*": [
+        "lib/*"
       ]
     },
     "resolveJsonModule": true,
