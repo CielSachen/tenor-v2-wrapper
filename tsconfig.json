@@ -11,6 +11,9 @@
     "moduleResolution": "NodeNext",
     "baseUrl": "src/",
     "paths": {
+      "@client": [
+        "client/index.ts"
+      ],
       "@constants": [
         "constants/index.ts"
       ],
