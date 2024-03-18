@@ -1,3 +1,5 @@
+import type { Endpoint } from '@constants';
+
 /**
  * This interface has the same semantics as `google.rpc.Status`. It uses HTTP status code instead of gRPC
  * status code. It has extra fields `status` and `errors` for backward compatibility with
@@ -27,7 +29,7 @@ export interface ErrorStatus {
  * @param parameters The query string parameters.
  * @returns The fetched JSON object response.
  */
-export async function fetchJSON<T>(endpoint: string, parameters: string) {
+export async function fetchJSON<T>(endpoint: Endpoint, parameters: string) {
   const response = await fetch(`https://tenor.googleapis.com/v2/${endpoint}${parameters}`);
 
   if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
