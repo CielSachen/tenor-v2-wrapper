@@ -292,15 +292,11 @@ export class Tenor {
    * @returns The fetched JSON object of a list of the most relevant GIFs.
    */
   public async fetchGIFsByQuery(query: string, parameters?: SearchParameters) {
-    const response = await fetchJSON<SearchResponse>(endpoints.search, new URLSearchParams({
+    return fetchJSON<SearchResponse>(endpoints.search, new URLSearchParams({
       key: this.#key,
       q: query,
       ...parameters,
-    }).toString());
-
-    if ('error' in response) throw new Error(`${response.error.code} ${response.error.status}: ${response.error.message}`);
-
-    return response;
+    }));
   }
 
   /**
@@ -310,14 +306,10 @@ export class Tenor {
    * @returns The fetched JSON object of a list of the current global featured GIFs.
    */
   public async fetchFeaturedGIFs(parameters?: FeaturedParameters) {
-    const response = await fetchJSON<FeaturedResponse>(endpoints.featured, new URLSearchParams({
+    return fetchJSON<FeaturedResponse>(endpoints.featured, new URLSearchParams({
       key: this.#key,
       ...parameters,
-    }).toString());
-
-    if ('error' in response) throw new Error(`${response.error.code} ${response.error.status}: ${response.error.message}`);
-
-    return response;
+    }));
   }
 
   /**
@@ -328,14 +320,10 @@ export class Tenor {
    * @returns The fetched JSON object of a list of GIF categories.
    */
   public async fetchGIFCategories(parameters?: CategoriesParameters) {
-    const response = await fetchJSON<CategoriesResponse>(endpoints.search, new URLSearchParams({
+    return fetchJSON<CategoriesResponse>(endpoints.search, new URLSearchParams({
       key: this.#key,
       ...parameters,
-    }).toString());
-
-    if ('error' in response) throw new Error(`${response.error.code} ${response.error.status}: ${response.error.message}`);
-
-    return response;
+    }));
   }
 
   /**
@@ -349,15 +337,11 @@ export class Tenor {
    * @returns The fetched JSON object of a list of alternative search terms.
    */
   public async fetchSearchSuggestionsByQuery(query: string, parameters?: SearchSuggestionsParameters) {
-    const response = await fetchJSON<SearchSuggestionsResponse>(endpoints.searchSuggestions, new URLSearchParams({
+    return fetchJSON<SearchSuggestionsResponse>(endpoints.searchSuggestions, new URLSearchParams({
       key: this.#key,
       q: query,
       ...parameters,
-    }).toString());
-
-    if ('error' in response) throw new Error(`${response.error.code} ${response.error.status}: ${response.error.message}`);
-
-    return response;
+    }));
   }
 
   /**
@@ -369,15 +353,11 @@ export class Tenor {
    * @returns The fetched JSON object of a list of completed search terms.
    */
   public async fetchAutocompleteByQuery(query: string, parameters?: AutocompleteParameters) {
-    const response = await fetchJSON<AutocompleteResponse>(endpoints.autocomplete, new URLSearchParams({
+    return fetchJSON<AutocompleteResponse>(endpoints.autocomplete, new URLSearchParams({
       key: this.#key,
       q: query,
       ...parameters,
-    }).toString());
-
-    if ('error' in response) throw new Error(`${response.error.code} ${response.error.status}: ${response.error.message}`);
-
-    return response;
+    }));
   }
 
   /**
@@ -387,14 +367,10 @@ export class Tenor {
    * @returns The fetched JSON object of a list of the current trending search terms.
    */
   public async fetchTrendingSearchTerms(parameters?: TrendingSearchTermsParameters) {
-    const response = await fetchJSON<TrendingSearchTermsResponse>(endpoints.trendingSearchTerms, new URLSearchParams({
+    return fetchJSON<TrendingSearchTermsResponse>(endpoints.trendingSearchTerms, new URLSearchParams({
       key: this.#key,
       ...parameters,
-    }).toString());
-
-    if ('error' in response) throw new Error(`${response.error.code} ${response.error.status}: ${response.error.message}`);
-
-    return response;
+    }));
   }
 
   /**
@@ -404,14 +380,10 @@ export class Tenor {
    * @returns The fetched JSON object of GIFs, stickers, or a combination of the two.
    */
   public async fetchPostsById(ids: string, parameters?: PostParameters) {
-    const response = await fetchJSON<PostResponse>(endpoints.posts, new URLSearchParams({
+    return fetchJSON<PostResponse>(endpoints.posts, new URLSearchParams({
       ids,
       key: this.#key,
       ...parameters,
-    }).toString());
-
-    if ('error' in response) throw new Error(`${response.error.code} ${response.error.status}: ${response.error.message}`);
-
-    return response;
+    }));
   }
 }
