@@ -9,5 +9,5 @@ export const endpoints = Object.freeze({
   posts: 'posts',
 });
 
-/** The {@link endpoints endpoint} path string available through the Tenor API. */
+/** The {@link endpoints endpoint}'s path string that's available through the Tenor API. */
 export type Endpoint = typeof endpoints[keyof typeof endpoints];

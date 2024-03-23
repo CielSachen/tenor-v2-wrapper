@@ -1,6 +1,6 @@
 /**
  * Describes an HTTP mapped Google API error payload.
- * @see {@link https://cloud.google.com/apis/design/errors#http_mapping Google Cloud APIs' errors documentation}
+ * @see {@link https://cloud.google.com/apis/design/errors#http_mapping}
  */
 export interface Status {
   /** The HTTP status code that corresponds to `google.rpc.Status.code`. */
@@ -20,7 +20,7 @@ export class GoogleAPIError extends Error implements Status {
   public readonly details?: Record<string, unknown>[];
 
   /**
-   * Constructs a new HTTP mapped Google API error instance.
+   * Constructs a new HTTP mapped Google API error.
    * @param error The actual error payload.
    * @param options The optional properties.
    */

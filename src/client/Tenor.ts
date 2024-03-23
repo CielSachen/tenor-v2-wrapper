@@ -1,7 +1,10 @@
 import { endpoints } from '@constants';
 import { fetchJSON } from '@lib/fetch.js';
 
-/** {@link https://developers.google.com/tenor/guides/response-objects-and-errors#format-types} */
+/**
+ * The content format offered by the Tenor API.
+ * @see {@link https://developers.google.com/tenor/guides/response-objects-and-errors#format-typesTenor}
+ */
 export type CONTENT_FORMAT =
   | 'gif'
   | 'gifpreview'
@@ -29,7 +32,10 @@ export type CONTENT_FORMAT =
   | 'nanogif_transparent'
 ;
 
-/** {@link https://developers.google.com/tenor/guides/response-objects-and-errors#media-object} */
+/**
+ * Describes the properties of a Tenor visual media.
+ * @see {@link https://developers.google.com/tenor/guides/response-objects-and-errors#media-object}
+ */
 export interface MEDIA_OBJECT {
   /** A url to the media source. */
   readonly url: string;
@@ -44,16 +50,22 @@ export interface MEDIA_OBJECT {
   readonly size: number;
 }
 
-/** {@link https://developers.google.com/tenor/guides/response-objects-and-errors#response-object} */
+/**
+ * Describes the properties of a Tenor API response object.
+ * @see {@link https://developers.google.com/tenor/guides/response-objects-and-errors#response-object}
+ */
 export interface RESPONSE_OBJECT {
   /** A Unix timestamp that represents when this post was created. */
   readonly created: number;
   /** Returns `true` if this post contains audio. */
   readonly hasaudio: boolean;
-  /** Tenor result identifier */
+  /** Tenor result identifier. */
   readonly id: string;
-  /** A dictionary with a content format as the key and a Media Object as the value. */
-  readonly media_formats: Partial<Record<CONTENT_FORMAT, MEDIA_OBJECT>>;
+  /**
+   * A dictionary with a {@link CONTENT_FORMAT content format} as the key and a
+   * {@link MEDIA_OBJECT Media Object} as the value.
+   */
+  readonly media_formats: Record<Partial<CONTENT_FORMAT>, MEDIA_OBJECT>;
   /** An array of tags for the post. */
   readonly tags: string[];
   /** The title of the post. */
@@ -69,9 +81,9 @@ export interface RESPONSE_OBJECT {
   /** Returns `true` if this post contains captions. */
   readonly hascaption: boolean;
   /**
-   * Comma-separated list to signify whether the content is a sticker or static image, has audio,
-   * or is any combination of these. If `sticker` and `static` aren't present, then the content is a
-   * GIF. A blank `flags` field signifies a GIF without audio.
+   * Comma-separated list to signify whether the content is a sticker or static image, has audio, or is
+   * any combination of these. If `sticker` and `static` aren't present, then the content is a GIF. A
+   * blank `flags` field signifies a GIF without audio.
    */
   readonly flags: string[];
   /** The most common background pixel color of the content. */
@@ -80,7 +92,10 @@ export interface RESPONSE_OBJECT {
   readonly url: string;
 }
 
-/** {@link https://developers.google.com/tenor/guides/response-objects-and-errors#category-object} */
+/**
+ * Describes the properties of a Tenor category.
+ * @see {@link https://developers.google.com/tenor/guides/response-objects-and-errors#category-object}
+ */
 export interface CATEGORY_OBJECT {
   /**
    * The search term that corresponds to the category. The search term is translated to match the
@@ -102,11 +117,14 @@ interface BaseParameters {
   /**
    * A client-specified string that represents the integration.
    *
-   * A client key lets you use the same API key across different integrations but still be able to differentiate them.
+   * A client key lets you use the same API key across different integrations but still be able to
+   * differentiate them.
    *
    * For an app integration, use the same `client_key` value for all API calls.
    *
-   * Any client custom behavior is triggered by the pairing of the key and client_key parameters.
+   * Any client custom behavior is triggered by the pairing of the `key` and `client_key`parameters.
+   *
+   * Doesn't have a default value.
    */
   client_key?: string;
 }
@@ -115,7 +133,10 @@ interface LocaleParameters extends BaseParameters {
 /**
  * Specify the country of origin for the request. To do so, provide its two-letter
  * {@link https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes ISO 3166-1} country code.
- * @default US
+ *
+ * The default value is US.
+ * @default
+ * { country: 'US' }
  */
   country?: string;
   /**
@@ -126,16 +147,29 @@ interface LocaleParameters extends BaseParameters {
    *
    * You can use the country code that you provide in `locale` to differentiate between dialects of the
    * given language.
-   * @default 'en_US'
+   *
+   * The default value is `en_US`.
+   * @default
+   * { locale: 'en_US' }
    */
   locale?: string;
 }
 
-/** {@link https://developers.google.com/tenor/guides/endpoints#parameters-search} */
+/**
+ * Describes the query string parameters of the `Search` endpoint.
+ * @see {@link https://developers.google.com/tenor/guides/endpoints#parameters-search}
+ */
 export interface SearchParameters extends LocaleParameters {
   /**
-   * Comma-separated list of non-GIF content types to filter the {@link RESPONSE_OBJECT Response Objects}
-   * . By default, `searchfilter` returns GIF content only.
+   * Comma-separated list of non-GIF content types to filter the
+   * {@link RESPONSE_OBJECT Response Objects}. By default, `searchfilter` returns GIF content only.
+   *
+   * Doesn't have a default value. The accepted values are `sticker`, `static`, and `-static`:
+   *
+   * - `searchfilter=sticker` returns both static and animated sticker content.
+   * - `searchfilter=sticker,-static` returns only animated sticker content.
+   * - `searchfilter=sticker,static` returns only static sticker content.
+   * - For GIF content, either leave `searchfilter` blank or don't use it.
    */
   searchfilter?:
     | 'sticker'
@@ -144,7 +178,10 @@ export interface SearchParameters extends LocaleParameters {
   ;
   /**
    * Specify the content safety filter level.
-   * @default 'off'
+   *
+   * The default value is `off`. The accepted values are `off`, `low`, `medium`, and `high`.
+   * @default
+   * { contentfilter: 'off' }
    */
   contentfilter?:
     | 'off'
@@ -155,12 +192,25 @@ export interface SearchParameters extends LocaleParameters {
   /**
    * Comma-separated list of GIF formats to filter the {@link RESPONSE_OBJECT Response Objects}. By
    * default, `media_filter` returns all formats for each Response Object.
+   *
+   * Example: `media_filter=gif,tinygif,mp4,tinymp4`
+   *
+   * Doesn't have a default value.
+   * @example
+   * { media_filter: 'gif,tinygif,mp4,tinymp4' }
    */
   media_filter?: string;
   /**
-   * Filter the {@link RESPONSE_OBJECT Response Objects}  to only include GIFs with aspect ratios that fit within the selected
-   * range.
-   * @default all
+   * Filter the {@link RESPONSE_OBJECT Response Objects} to only include GIFs with aspect ratios that fit
+   * within the selected range.
+   *
+   * The default value is `all`. The accepted values are `all`, `wide`, and `standard`:
+   *
+   * - `all`: No constraints
+   * - `wide`: 0.42 <= aspect ratio <= 2.36
+   * - `standard`: 0.56 <= aspect ratio <= 1.78
+   * @default
+   * { ar_range: 'all' }
    */
   ar_range?:
     | 'all'
@@ -168,36 +218,57 @@ export interface SearchParameters extends LocaleParameters {
     | 'standard'
   ;
   /**
-   * Specify whether to randomly order the response.
-   * @default false
+   * Specify whether to randomly order the response. The default value is `false`, which orders the
+   * results by Tenor's relevancy ranking.
+   *
+   * The accepted values are `true` and `false`.
+   * @default
+   * { random: 'false' }
    */
   random?: `${boolean}`;
   /**
-   * Fetch up to the specified number of results. Maximum value of 50.
-   * @default 20
+   * Fetch up to the specified number of results.
+   *
+   * The default value is `20`, and the maximum value is `50`.
+   * @default
+   * { limit: '20' }
    */
   limit?: `${number}`;
   /**
-   * Retrieve results that start at the position "value". Use a non-zero, non-empty value from
-   * `next`, returned by the API response, to fetch the next set of results. `pos` isn't an index and
-   * might be an `integer`, `float`, or `string`.
+   * Retrieve results that start at the position "value". Use a non-zero, non-empty value from `next`,
+   * returned by the API response, to fetch the next set of results. `pos` isn't an index and might be an
+   * `integer`, `float`, or a `string`.
+   *
+   * Doesn't have a default value.
    */
   pos?: string;
 }
 
-/** {@link https://developers.google.com/tenor/guides/endpoints#parameters-featured} */
+/**
+ * Describes the query string parameters of the `Featured` endpoint.
+ * @see {@link https://developers.google.com/tenor/guides/endpoints#parameters-featured}
+ */
 export type FeaturedParameters = Omit<SearchParameters, 'random'>;
 
-/** {@link https://developers.google.com/tenor/guides/endpoints#parameters-categories} */
+/**
+ * Describes the query string parameters of the `Categories` endpoint.
+ * @see {@link https://developers.google.com/tenor/guides/endpoints#parameters-categories}
+ */
 export interface CategoriesParameters extends LocaleParameters {
   /**
    * Determines the type of categories returned.
-   * @default 'featured'
+   *
+   * The default value is featured. The accepted values are featured and trending.
+   * @default
+   * { type: 'featured' }
    */
   type?: 'featured' | 'trending';
   /**
    * Specify the content safety filter level.
-   * @default 'off'
+   *
+   * The default value is `off`. The accepted values are `off`, `low`, `medium`, and `high`.
+   * @default
+   * { contentfilter: 'off' }
    */
   contentfilter?:
     | 'off'
@@ -207,86 +278,131 @@ export interface CategoriesParameters extends LocaleParameters {
   ;
 }
 
-/** {@link https://developers.google.com/tenor/guides/endpoints#parameters-categsearch-suggestionsories} */
+/**
+ * Describes the query string parameters of the `Search Suggestions` endpoint.
+ * @see {@link https://developers.google.com/tenor/guides/endpoints#parameters-categsearch-suggestionsories}
+ */
 export interface SearchSuggestionsParameters extends LocaleParameters {
   /**
-   * Fetch up to the specified number of results. Maximum value of 50.
-   * @default 20
+   * Fetch up to the specified number of results.
+   *
+   * The default value is `20`, and the maximum value is `50`.
+   * @default
+   * { limit: '20' }
    */
   limit?: `${number}`;
 }
 
-/** {@link https://developers.google.com/tenor/guides/endpoints#parameters-autocomplete} */
+/**
+ * Describes the query string parameters of the `Autocomplete` endpoint.
+ * @see {@link https://developers.google.com/tenor/guides/endpoints#parameters-autocomplete}
+ */
 export type AutocompleteParameters = SearchSuggestionsParameters;
 
-/** {@link https://developers.google.com/tenor/guides/endpoints#parameters-trending-search} */
+/**
+ * Describes the query string parameters of the `Trending Search Terms` endpoint.
+ * @see {@link https://developers.google.com/tenor/guides/endpoints#parameters-trending-search}
+ */
 export type TrendingSearchTermsParameters = SearchSuggestionsParameters;
 
-/** {@link https://developers.google.com/tenor/guides/endpoints#parameters-posts} */
+/**
+ * Describes the query string parameters of the `Posts` endpoint.
+ * @see {@link https://developers.google.com/tenor/guides/endpoints#parameters-posts}
+ */
 export interface PostParameters extends BaseParameters {
   /**
    * Comma-separated list of GIF formats to filter the {@link RESPONSE_OBJECT Response Objects}. By
    * default, `media_filter` returns all formats for each Response Object.
+   *
+   * Example: `media_filter=gif,tinygif,mp4,tinymp4`
+   *
+   * Doesn't have a default value.
+   * @example
+   * { media_filter: 'gif,tinygif,mp4,tinymp4' }
    */
   media_filter?: string;
 }
 
-/** {@link https://developers.google.com/tenor/guides/endpoints#response-format-search} */
+/**
+ * Describes the JSON object response of the `Search` endpoint.
+ * @see {@link https://developers.google.com/tenor/guides/endpoints#response-format-search}
+ */
 export interface SearchResponse {
   /**
-   * A position identifier to use with the next API query, through the pos field, to retrieve the next
-   * set of results. If there are no further results an empty string.
+   * A position identifier to use with the next API query, through the `pos` field, to retrieve the next
+   * set of results. If there are no further results, `next` returns an empty string.
    */
   readonly next: string;
   /**
-   * An array of {@link RESPONSE_OBJECT Response Objects} that contains the most relevant content for the requested search
-   * term. The content is sorted by its relevancy Rank.
+   * An array of {@link RESPONSE_OBJECT Response Objects} that contains the most relevant content for the
+   * requested search term. The content is sorted by its relevancy Rank.
    */
   readonly results: RESPONSE_OBJECT[];
 }
 
-/** {@link https://developers.google.com/tenor/guides/endpoints#response-format-featured} */
+/**
+ * Describes the JSON object response of the `Featured` endpoint.
+ * @see {@link https://developers.google.com/tenor/guides/endpoints#response-format-featured}
+ */
 export interface FeaturedResponse extends SearchResponse {
   /** An array of {@link RESPONSE_OBJECT Response Objects}. */
   readonly results: RESPONSE_OBJECT[];
 }
 
-/** {@link https://developers.google.com/tenor/guides/endpoints#response-format-categories} */
+/**
+ * Describes the JSON object response of the `Categories` endpoint.
+ * @see {@link https://developers.google.com/tenor/guides/endpoints#response-format-categories}
+ */
 export interface CategoriesResponse {
   /**
-   * An array of {@link CATEGORY_OBJECT CATEGORY_OBJECTS} where the name field has been translated
-   * into the locale language.
+   * An array of {@link CATEGORY_OBJECT CATEGORY_OBJECTS} where the `name` field has been translated into
+   * the `locale` language.
    */
   readonly tags: CATEGORY_OBJECT[];
 }
 
-/** {@link https://developers.google.com/tenor/guides/endpoints#response-format-search-suggestions} */
+/**
+ * Describes the JSON object response of the `Search Suggestions` endpoint.
+ * @see {@link https://developers.google.com/tenor/guides/endpoints#response-format-search-suggestions}
+ */
 export interface SearchSuggestionsResponse {
   /** An array of suggested search terms. */
   readonly results: string[];
 }
 
-/** {@link https://developers.google.com/tenor/guides/endpoints#response-format-autocomplete} */
+/**
+ * Describes the JSON object response of the `Autocomplete` endpoint.
+ * @see {@link https://developers.google.com/tenor/guides/endpoints#response-format-autocomplete}
+ */
 export type AutocompleteResponse = SearchSuggestionsResponse;
 
-/** {@link https://developers.google.com/tenor/guides/endpoints#response-format-trending-search} */
+/**
+ * Describes the JSON object response of the `Trending Search Terms` endpoint.
+ * @see {@link https://developers.google.com/tenor/guides/endpoints#response-format-trending-search}
+ */
 export interface TrendingSearchTermsResponse extends SearchSuggestionsResponse {
   /** An array of suggested search terms. The terms are sorted by their Trending Rank. */
   readonly results: string[];
 }
 
-/** {@link https://developers.google.com/tenor/guides/endpoints#response-format-posts} */
+/**
+ * Describes the JSON object response of the `Posts` endpoint.
+ * @see {@link https://developers.google.com/tenor/guides/endpoints#response-format-posts}
+ */
 export interface PostResponse {
-  /** An array of {@link RESPONSE_OBJECT Response Objects} that correspond to those passed in the ids list. */
+  /** An array of {@link RESPONSE_OBJECT Response Objects} that correspond to those passed in the `ids` list. */
   readonly results: RESPONSE_OBJECT[];
 }
 
-/** The Tenor API v2 wrapper. */
+/** Describes a wrapper for fetching the Tenor API endpoints. */
 export class Tenor {
   /** API key for privileged access. */
   #key: string;
 
-  /** @param key The Google Cloud Tenor API key. */
+  /**
+   * Constructs a new Tenor API endpoints wrapper.
+   * @param key The Tenor API key.
+   */
   constructor(key: string) {
     this.#key = key;
   }
@@ -296,7 +412,7 @@ export class Tenor {
    * terms, categories, emojis, or any combination of these.
    * @param query The query search term.
    * @param parameters The optional parameters.
-   * @returns The fetched JSON object of a list of the most relevant GIFs.
+   * @returns The fetched JSON object of a list of GIFs.
    */
   public async fetchGIFsByQuery(query: string, parameters?: SearchParameters) {
     return fetchJSON<SearchResponse>(endpoints.search, new URLSearchParams({
@@ -307,10 +423,9 @@ export class Tenor {
   }
 
   /**
-   * Fetches a JSON object that contains a list of the current global featured GIFs. Tenor updates the
-   * featured stream regularly throughout the day.
+   * Fetches a JSON object that contains a list of the current global featured GIFs.
    * @param parameters The optional parameters.
-   * @returns The fetched JSON object of a list of the current global featured GIFs.
+   * @returns The fetched JSON object of a list of featured GIFs.
    */
   public async fetchFeaturedGIFs(parameters?: FeaturedParameters) {
     return fetchJSON<FeaturedResponse>(endpoints.featured, new URLSearchParams({
@@ -321,8 +436,6 @@ export class Tenor {
 
   /**
    * Fetches a JSON object that contains a list of GIF categories associated with the provided type.
-   * Each category includes a corresponding search URL to use if the user clicks on the category.
-   * The search URL includes any parameters from the original call to the Categories endpoint.
    * @param parameters The optional parameters.
    * @returns The fetched JSON object of a list of GIF categories.
    */
@@ -335,10 +448,6 @@ export class Tenor {
 
   /**
    * Fetches a JSON object that contains a list of alternative search terms for a given search term.
-   *
-   * Search suggestions help a user narrow their search or discover related search terms to find a
-   * more precise GIF. The API returns results in order of what is most likely to drive a share for
-   * a given term, based on historic user search and share behavior.
    * @param query The query search term.
    * @param parameters The optional parameters.
    * @returns The fetched JSON object of a list of alternative search terms.
@@ -353,8 +462,6 @@ export class Tenor {
 
   /**
    * Fetches a JSON object that contains a list of completed search terms for a given partial search term.
-   * The list is sorted by Tenor's AI and the number of results decreases as Tenor's AI becomes more
-   * certain.
    * @param query The query search term.
    * @param parameters The optional parameters.
    * @returns The fetched JSON object of a list of completed search terms.
@@ -368,10 +475,9 @@ export class Tenor {
   }
 
   /**
-   * Fetches a JSON object that contains a list of the current trending search terms. Tenor's AI updates the
-   * list hourly.
+   * Fetches a JSON object that contains a list of the current trending search terms.
    * @param parameters The optional parameters.
-   * @returns The fetched JSON object of a list of the current trending search terms.
+   * @returns The fetched JSON object of a list of trending search terms.
    */
   public async fetchTrendingSearchTerms(parameters?: TrendingSearchTermsParameters) {
     return fetchJSON<TrendingSearchTermsResponse>(endpoints.trendingSearchTerms, new URLSearchParams({
