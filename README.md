@@ -1,17 +1,31 @@
 # tenor-v2-wrapper
 
-[![Node.js](https://img.shields.io/badge/Node.js-20.11.0-339933?style=flat-square&logo=Node.js&logoColor=339933&labelColor=222222)](https://nodejs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.3.3-3178C6?style=flat-square&logo=TypeScript&logoColor=3178C6&labelColor=222222)](https://www.typescriptlang.org)
+![Node.js Static Badge](https://img.shields.io/badge/Node.js-20.x-44883E?style=flat-square&logo=node.js)
+![pnpm Static Badge](https://img.shields.io/badge/pnpm-8.x-orange?style=flat-square&logo=pnpm)
+![TypeScript Static Badge](https://img.shields.io/badge/TypeScript-5.4.x-3178C6?style=flat-square&logo=typescript)
 
 An easy way to use [Tenor's v2 API](https://developers.google.com/tenor/guides/quickstart) in a [Node.js](https://nodejs.org) project.
 
 This wrapper was made for use in my personal projects, therefore this will not be the most robust wrapper in the world and may even be pretty bad.
 
+*Typings and JSDoc descriptions were taken from the [Tenor API Documentation](https://developers.google.com/tenor/guides/quickstart) and the [Google Cloud APIs Errors Documentation](https://cloud.google.com/apis/design/errors).*
+
 ___
 
-## Install
+## Installation
 
-**Node.js v20.11.0 or newer is required.**
+### Requirements
+
+- Node.js v20 or newer.
+- An `.npmrc` file containing these:
+
+  ```properties
+  @cielsachen:registry=https://npm.pkg.github.com/
+  # Replace ${GITHUB_PERSONAL_ACCESS_TOKEN} with the actual token.
+  //npm.pkg.github.com/:_authToken=${GITHUB_PERSONAL_ACCESS_TOKEN}
+  ```
+
+### From GitHub Packages
 
 ```bash
 npm install @cielsachen/tenor-v2-wrapper
@@ -21,7 +35,9 @@ npm install @cielsachen/tenor-v2-wrapper
 pnpm add @cielsachen/tenor-v2-wrapper
 ```
 
-## Configuration
+## Usage
+
+### Configuration
 
 Set the key that the wrapper will use by passing the Google Cloud Tenor API key to the class' constructor:
 
@@ -31,27 +47,7 @@ import { Tenor } from '@cielsachen/tenor-v2-wrapper';
 const tenor = new Tenor(process.env.TENOR_KEY);
 ```
 
-## Endpoints
-
-- **Search** (`fetchGIFsByQuery`) - Returns a list of the most relevant GIFs.
-- **Featured** (`fetchFeaturedGIFs`) - Returns a list of the current global featured GIFs.
-- **Categories** (`fetchGIFCategories`) - Returns a list of GIF categories.
-- **Search Suggestions** (`fetchSearchSuggestionsByQuery`) - Returns a list of alternative search terms.
-- **Autocomplete** (`fetchAutocompleteByQuery`) - Returns a list of completed search terms.
-- **Trending Search Terms** (`fetchTrendingSearchTerms`) - Returns a list of the current trending search terms.
-- **Posts** (`fetchPostsById`) - Returns GIFs, stickers, or a combination of the two.
-
-*I had chosen to not include the **Register Share** endpoint.*
-
-## Usage
-
-```typescript
-import { Tenor } from '@cielsachen/tenor-v2-wrapper';
-
-const tenor = new Tenor(process.env.TENOR_KEY);
-```
-
-### Example Requests
+### Example
 
 ```typescript
 (async () => {
