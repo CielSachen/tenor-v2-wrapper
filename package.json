@@ -28,7 +28,8 @@
   ],
   "scripts": {
     "build": "tsc && tsc-alias",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
   },
   "devDependencies": {
     "@stylistic/eslint-plugin": "^1.7.0",
