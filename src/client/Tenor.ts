@@ -113,7 +113,11 @@ export interface CATEGORY_OBJECT {
   readonly name: string;
 }
 
-interface BaseParameters {
+/**
+ * Describes the query string parameters of the `Search` endpoint.
+ * @see {@link https://developers.google.com/tenor/guides/endpoints#parameters-search}
+ */
+export interface SearchParameters {
   /**
    * A client-specified string that represents the integration.
    *
@@ -127,39 +131,6 @@ interface BaseParameters {
    * Doesn't have a default value.
    */
   client_key?: string;
-}
-
-interface LocaleParameters extends BaseParameters {
-/**
- * Specify the country of origin for the request. To do so, provide its two-letter
- * {@link https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes ISO 3166-1} country code.
- *
- * The default value is US.
- * @default
- * { country: 'US' }
- */
-  country?: string;
-  /**
-   * Specify the default language to interpret the search string. `xx` is the language's
-   * {@link https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes ISO 639-1} language code, while
-   * the optional `_YY` value is the two-letter
-   * {@link https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes ISO 3166-1} country code.
-   *
-   * You can use the country code that you provide in `locale` to differentiate between dialects of the
-   * given language.
-   *
-   * The default value is `en_US`.
-   * @default
-   * { locale: 'en_US' }
-   */
-  locale?: string;
-}
-
-/**
- * Describes the query string parameters of the `Search` endpoint.
- * @see {@link https://developers.google.com/tenor/guides/endpoints#parameters-search}
- */
-export interface SearchParameters extends LocaleParameters {
   /**
    * Comma-separated list of non-GIF content types to filter the
    * {@link RESPONSE_OBJECT Response Objects}. By default, `searchfilter` returns GIF content only.
@@ -176,6 +147,29 @@ export interface SearchParameters extends LocaleParameters {
     | 'sticker,-static'
     | 'sticker,static'
   ;
+  /**
+   * Specify the country of origin for the request. To do so, provide its two-letter
+   * {@link https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes ISO 3166-1} country code.
+   *
+   * The default value is US.
+   * @default
+   * { country: 'US' }
+   */
+  country?: Uppercase<string>;
+  /**
+   * Specify the default language to interpret the search string. `xx` is the language's
+   * {@link https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes ISO 639-1} language code, while
+   * the optional `_YY` value is the two-letter
+   * {@link https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes ISO 3166-1} country code.
+   *
+   * You can use the country code that you provide in `locale` to differentiate between dialects of the
+   * given language.
+   *
+   * The default value is `en_US`.
+   * @default
+   * { locale: 'en_US' }
+   */
+  locale?: Lowercase<string> | `${Lowercase<string>}_${Uppercase<string>}`;
   /**
    * Specify the content safety filter level.
    *
@@ -254,7 +248,12 @@ export type FeaturedParameters = Omit<SearchParameters, 'random'>;
  * Describes the query string parameters of the `Categories` endpoint.
  * @see {@link https://developers.google.com/tenor/guides/endpoints#parameters-categories}
  */
-export interface CategoriesParameters extends LocaleParameters {
+export interface CategoriesParameters extends Pick<SearchParameters,
+  | 'client_key'
+  | 'country'
+  | 'locale'
+  | 'contentfilter'
+> {
   /**
    * Determines the type of categories returned.
    *
@@ -263,35 +262,18 @@ export interface CategoriesParameters extends LocaleParameters {
    * { type: 'featured' }
    */
   type?: 'featured' | 'trending';
-  /**
-   * Specify the content safety filter level.
-   *
-   * The default value is `off`. The accepted values are `off`, `low`, `medium`, and `high`.
-   * @default
-   * { contentfilter: 'off' }
-   */
-  contentfilter?:
-    | 'off'
-    | 'low'
-    | 'medium'
-    | 'high'
-  ;
 }
 
 /**
  * Describes the query string parameters of the `Search Suggestions` endpoint.
  * @see {@link https://developers.google.com/tenor/guides/endpoints#parameters-categsearch-suggestionsories}
  */
-export interface SearchSuggestionsParameters extends LocaleParameters {
-  /**
-   * Fetch up to the specified number of results.
-   *
-   * The default value is `20`, and the maximum value is `50`.
-   * @default
-   * { limit: '20' }
-   */
-  limit?: `${number}`;
-}
+export type SearchSuggestionsParameters = Pick<SearchParameters,
+  | 'client_key'
+  | 'country'
+  | 'locale'
+  | 'limit'
+>;
 
 /**
  * Describes the query string parameters of the `Autocomplete` endpoint.
@@ -309,19 +291,10 @@ export type TrendingSearchTermsParameters = SearchSuggestionsParameters;
  * Describes the query string parameters of the `Posts` endpoint.
  * @see {@link https://developers.google.com/tenor/guides/endpoints#parameters-posts}
  */
-export interface PostParameters extends BaseParameters {
-  /**
-   * Comma-separated list of GIF formats to filter the {@link RESPONSE_OBJECT Response Objects}. By
-   * default, `media_filter` returns all formats for each Response Object.
-   *
-   * Example: `media_filter=gif,tinygif,mp4,tinymp4`
-   *
-   * Doesn't have a default value.
-   * @example
-   * { media_filter: 'gif,tinygif,mp4,tinymp4' }
-   */
-  media_filter?: string;
-}
+export type PostsParameters = Pick<SearchParameters,
+  | 'client_key'
+  | 'media_filter'
+>;
 
 /**
  * Describes the JSON object response of the `Search` endpoint.
@@ -389,7 +362,7 @@ export interface TrendingSearchTermsResponse extends SearchSuggestionsResponse {
  * Describes the JSON object response of the `Posts` endpoint.
  * @see {@link https://developers.google.com/tenor/guides/endpoints#response-format-posts}
  */
-export interface PostResponse {
+export interface PostsResponse {
   /** An array of {@link RESPONSE_OBJECT Response Objects} that correspond to those passed in the `ids` list. */
   readonly results: RESPONSE_OBJECT[];
 }
@@ -492,8 +465,8 @@ export class Tenor {
    * @param parameters The optional parameters.
    * @returns The fetched JSON object of GIFs, stickers, or a combination of the two.
    */
-  public async fetchPostsById(ids: string, parameters?: PostParameters) {
-    return fetchJSON<PostResponse>(endpoints.posts, new URLSearchParams({
+  public async fetchPostsById(ids: string, parameters?: PostsParameters) {
+    return fetchJSON<PostsResponse>(endpoints.posts, new URLSearchParams({
       ids,
       key: this.#key,
       ...parameters,
